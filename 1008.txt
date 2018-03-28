@@ -1,0 +1,31 @@
+//poj 1008
+import java.util.*;
+import java.lang.*;
+public class Main{
+    public static void main(String[] args){
+        String[] Haab = {"pop", "no","zip", "zotz", "tzec",
+                "xul", "yoxkin", "mol", "chen", "yax", "zac",
+                "ceh", "mac", "kankin", "muan", "pax", "koyab", "cumhu","uayet"};//18月20天19月5天 0-19
+        String[] Tzolkin = { "imix", "ik", "akbal", "kan", "chicchan",
+                "cimi", "manik", "lamat", "muluk", "ok",
+                "chuen", "eb", "ben", "ix", "mem", "cib", "caban", "eznab", "canac", "ahau"};//每月20天 1-13 0-12
+        Scanner s = new Scanner(System.in);
+        int n = Integer.parseInt(s.nextLine());
+        System.out.println(n);
+        for(int i = 0;i < n;i++)
+        {
+            int days = 0;
+            String[] line = s.nextLine().split("\\. ");
+            String[] line2 = line[1].split(" ");
+            int year = Integer.parseInt(line2[1]);
+            for(int j = 0;j < Haab.length;j++)
+                if(line2[0].equals(Haab[j]) && line2[0]!="uayet") {
+                    days = year * 365 + j * 20 + Integer.parseInt(line[0]);
+                }
+                else if(line2[0].equals("uayet"))
+                    days = year * 365 + 18 * 20 + Integer.parseInt(line[0]);
+            System.out.println(days%13+1 +" "+Tzolkin[days%20]+" "+ days/(13*20));
+        }
+    }
+}
+

@@ -1,0 +1,81 @@
+//poj 1011
+import java.lang.*;
+import java.util.*;
+public class Main{
+    //快速排序 O(nlogn)
+    static boolean flag = false;
+    static int[] num;
+    static boolean[] visit;
+    static int length;
+    public static void sort(int[] array,int low,int high){
+        if(low < high) {
+            int pos = position(array,low,high);
+            sort(array,0,pos-1);
+            sort(array,pos+1,high);
+        }
+    }
+    public static int position(int[] array,int low,int high){
+        int index = array[low];
+        while (low < high){
+            while (low < high && array[high] <= index)
+                high--;
+            array[low] = array[high];
+            while (low < high && array[low] >= index)
+                low++;
+            array[high] = array[low];
+        }
+        array[low] = index;
+        return low;
+    }
+    public static void dfs(int dep,int num_len,int u){//dep当前已经用过的小棒数 num_len当前的长度  u是当前要处理的小棒
+        if(flag) return;
+        if (num_len == 0) {//说明当前没有小棒 寻找下一根最长小棒
+            int k = 0;
+            while(visit[k])k++;
+            visit[k] = true;
+            dfs(dep+1,num[k],k+1);
+            visit[k] = false;//?
+            return;
+        }
+        if(num_len == length) {//说明又找到一根
+            if(dep == num.length)flag = true;
+            else dfs(dep,0,0);
+            return;
+        }
+        for(int i = u;i < num.length;i++){
+            if(!visit[i] && num[i]+num_len <= length){
+                if(!visit[i-1] && num[i]==num[i-1])continue;
+                visit[i]=true;
+                dfs(dep+1,num_len+num[i],i+1);
+                visit[i] = false;
+            }
+        }
+    }
+    public static void main(String[] args)
+    {
+        Scanner s = new Scanner(System.in);
+        int n;
+        while((n = Integer.valueOf(s.nextLine()))!= 0){
+            int max = 0,sum= 0;
+            num = new int[n];
+            visit = new boolean[n];
+            for(int i = 0;i<n;i++) {
+                visit[i] = false;//访问数组初始化为0
+                num[i] = s.nextInt();//数组存数据
+                sum += num[i];//求出总长度
+                if(num[i] > max)
+                    max = num[i];//找出最大值 最终结果肯定处于（max,num）
+            }
+            sort(num,0,num.length-1);//排序
+            s.nextLine();
+            for(length = max;length < sum;length++){
+                if(sum % length == 0){
+                //使用深度优先搜索 从长度最长的小棒开始
+                    dfs(0,0,0);
+                    if(flag)break;
+                }
+            }
+            System.out.println(length);
+        }
+    }
+}
